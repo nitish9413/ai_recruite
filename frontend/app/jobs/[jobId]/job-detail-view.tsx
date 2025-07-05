@@ -9,11 +9,16 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { format } from "date-fns";
-import { Briefcase, Calendar, MapPin, AlertCircle } from "lucide-react";
+import { Briefcase, Calendar, MapPin, AlertCircle, Check } from "lucide-react";
 import { ApplyForJobDialog } from "./apply-dialog"; // We will create this next
+import { Separator } from "@/components/ui/separator";
 
 // We extend the Job type to include the description we added in the API
-type JobWithDescription = Job & { description: string };
+type JobWithDescription = Job & {
+  description: string
+  responsibilities?: string[]; // Make optional to avoid errors if API doesn't return it
+  qualifications?: string[];
+};
 
 async function getJob(jobId: string): Promise<JobWithDescription> {
   const res = await fetch(`/api/jobs/${jobId}`);
@@ -41,20 +46,21 @@ export default function JobDetailView() {
   });
 
   if (isLoading) {
+    // A better skeleton for the new layout
     return (
-      <Card>
-        <CardHeader>
-          <Skeleton className="h-8 w-3/4" />
-          <Skeleton className="h-5 w-1/2 mt-2" />
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-5/6" />
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2 space-y-8">
+          <Skeleton className="h-12 w-3/4" />
+          <Skeleton className="h-40 w-full" />
+          <Skeleton className="h-40 w-full" />
+        </div>
+        <div>
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </div>
     );
   }
+
 
   if (error) {
     return (
@@ -73,36 +79,79 @@ export default function JobDetailView() {
   if (!job) return null;
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle className="text-3xl font-bold">{job.title}</CardTitle>
-            <CardDescription className="text-xl pt-1">{job.companyName}</CardDescription>
+    // This is the new two-column layout
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12">
+
+      {/* Left Column: Job Description Details */}
+      <div className="md:col-span-2">
+        <h1 className="text-4xl font-bold tracking-tight">{job.title}</h1>
+        <h2 className="text-xl text-muted-foreground mt-1">{job.companyName}</h2>
+
+        <div className="mt-8">
+          <h3 className="text-xl font-bold mb-4">Job Description</h3>
+          <p className="text-muted-foreground whitespace-pre-line">{job.description}</p>
+        </div>
+
+        {job.responsibilities && (
+          <div className="mt-8">
+            <h3 className="text-xl font-bold mb-4">Responsibilities</h3>
+            <ul className="space-y-3">
+              {job.responsibilities.map((item, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <Check className="h-5 w-5 mt-1 text-green-600 flex-shrink-0" />
+                  <span className="text-muted-foreground">{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-          <ApplyForJobDialog jobId={job.id} jobTitle={job.title} />
+        )}
+
+        {job.qualifications && (
+          <div className="mt-8">
+            <h3 className="text-xl font-bold mb-4">Qualifications</h3>
+            <ul className="space-y-3">
+              {job.qualifications.map((item, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <Check className="h-5 w-5 mt-1 text-green-600 flex-shrink-0" />
+                  <span className="text-muted-foreground">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* Right Column: Sticky Summary & Apply Box */}
+      <aside className="mt-8 md:mt-0">
+        <div className="sticky top-24">
+          <Card>
+            <CardContent className="p-6">
+              <ApplyForJobDialog jobId={job.id} jobTitle={job.title} />
+
+              <Separator className="my-6" />
+
+              <h3 className="text-lg font-semibold mb-4">Job Overview</h3>
+              <div className="space-y-4 text-sm">
+                <div className="flex items-center gap-3">
+                  <Briefcase className="h-5 w-5 text-muted-foreground" />
+                  <span className="font-medium">{job.type}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-5 w-5 text-muted-foreground" />
+                  <span className="font-medium">{job.location}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Calendar className="h-5 w-5 text-muted-foreground" />
+                  <span className="font-medium">
+                    Posted on {format(new Date(job.postedDate), 'MMM d, yyyy')}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground pt-4">
-            <div className="flex items-center gap-2">
-                <Briefcase className="h-4 w-4" />
-                <span>{job.type}</span>
-            </div>
-            <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                <span>{job.location}</span>
-            </div>
-            <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                <span>Posted on {format(new Date(job.postedDate), 'MMM d, yyyy')}</span>
-            </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <h3 className="text-lg font-semibold mb-2">Job Description</h3>
-        <p className="text-muted-foreground whitespace-pre-line">
-            {job.description}
-        </p>
-      </CardContent>
-    </Card>
+      </aside>
+
+    </div>
   );
 }

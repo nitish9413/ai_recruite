@@ -9,6 +9,7 @@ export type Job = {
   type: "Full-time" | "Part-time" | "Contract" | "Internship";
   postedDate: string; // ISO 8601 date string
   status: "Open" | "Closed" | "Interviewing";
+  
 };
 
 export type Candidate = {
