@@ -13,9 +13,9 @@ const candidates: Candidate[] = [
 
 export async function GET(
   request: Request,
-  context: { params: { jobId: string } }
+  { params }: { params: { jobId: string } }
 ) {
-  const jobId = context.params.jobId;
+  const jobId = await params;
 
   // You can use the jobId to fetch candidates specific to that job.
   // For this mock, we'll return the same list for any job ID.

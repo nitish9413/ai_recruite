@@ -23,3 +23,35 @@ export async function GET() {
 
   return NextResponse.json(openJobs);
 }
+
+// --- ADD THE NEW POST FUNCTION ---
+export async function POST(request: Request) {
+  const body = await request.json();
+  const { title, description } = body;
+
+  if (!title || !description) {
+    return NextResponse.json({ error: 'Title and description are required' }, { status: 400 });
+  }
+
+  // In a real backend, the LLM would process the `description` to extract
+  // location, type, etc. We'll just mock it here.
+  const newJobId = `job-${Date.now()}`;
+  const newJob: Job = {
+    id: newJobId,
+    title: title,
+    companyName: "My Company", // This would come from the recruiter's session
+    location: "Remote",
+    type: "Full-time",
+    postedDate: new Date().toISOString(),
+    status: "Open",
+  };
+
+  console.log("New job created on backend:", newJob);
+  jobs.push(newJob); // Add to our in-memory list
+
+  // Simulate processing time
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  // Return the ID of the newly created job
+  return NextResponse.json({ message: 'Job created', jobId: newJobId }, { status: 201 });
+}
