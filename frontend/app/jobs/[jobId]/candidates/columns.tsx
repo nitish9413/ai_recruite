@@ -11,9 +11,13 @@ import { format } from "date-fns";
 
 // Function to determine badge color based on score
 const getScoreBadgeVariant = (score: number): "default" | "secondary" | "destructive" => {
-  if (score >= 90) return "default"; // Greenish in default theme
-  if (score >= 75) return "secondary"; // Grayish
-  return "destructive"; // Reddish
+  if (score >= 90) {
+    return "default";
+  }
+  if (score >= 75) {
+    return "secondary";
+  }
+  return "destructive";
 }
 
 export const columns: ColumnDef<Candidate>[] = [
@@ -37,7 +41,7 @@ export const columns: ColumnDef<Candidate>[] = [
     cell: ({ row }) => {
       const score: number = row.getValue("matchScore");
       return (
-        <Badge variant={getScoreBadgeVariant(score)} className="text-lg">
+        <Badge variant={getScoreBadgeVariant(score)} className="text-lg font-semibold">
           {score}%
         </Badge>
       );
