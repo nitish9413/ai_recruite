@@ -1,0 +1,16 @@
+__pycache__
+.venv
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info
+dist
+build
+*.whl
+*.log
+*.sqlite3
+*.db
+*.DS_Store
+*.coverage
