@@ -1,6 +1,6 @@
 import json
 from typing import List
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.tables import Job

@@ -31,6 +31,7 @@ class JobBase(BaseModel):
     company_name: str = Field(
         ..., alias="companyName", description="Name of the company hiring"
     )
+    description:str =Field(...,description="Job description")
     location: str = Field(
         ..., description="The physical or remote location for the job"
     )

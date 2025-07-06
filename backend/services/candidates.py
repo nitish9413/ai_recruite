@@ -2,7 +2,7 @@ from typing import Any, Dict, List
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.schemas import ApplicationPayload, PatchCandidatePayload
+from models.schemas import ApplicationPayload
 from models.tables import Candidate
 
 

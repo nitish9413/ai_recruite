@@ -78,7 +78,6 @@ from models import schemas
 #         print("Database seeding complete!")
 
 async def seed_data():
-    from sqlalchemy import select
 
     async with AsyncSessionLocal() as session:
         # --- Skip if already seeded ---
