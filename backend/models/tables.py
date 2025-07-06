@@ -8,7 +8,7 @@ from sqlalchemy import (
     Text,
 )
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 from core.database import Base
@@ -43,7 +43,8 @@ class Candidate(Base):
     id = Column(String, primary_key=True, default=generate_uuid)
     name = Column(String, nullable=False)
     email = Column(String, nullable=False)
-    application_date = Column(DateTime, nullable=False)
+    years_of_experience= Column(Integer,nullable=False)
+    application_date = Column(DateTime, nullable=False,default=datetime.now(timezone.utc))
     resume_url = Column(String, nullable=False)
     match_score = Column(Integer)
     ai_assessment = Column(Text)

@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import EmailStr
 from datetime import datetime
 from pydantic.config import ConfigDict
@@ -120,3 +121,36 @@ class ApplicationPayload(BaseModel):
         ge=0,
         description="Applicant's stated years of experience",
     )
+
+
+class PatchCandidatePayload(BaseModel):
+    """
+    Payload for partially updating a Candidate.
+    All fields are optional, allowing the client to send only the data they wish to change.
+    """
+    name: Optional[str] = Field(None, description="The new name of the applicant")
+
+    email: Optional[EmailStr] = Field(None, description="The new email of the applicant")
+
+    years_of_experience: Optional[int] = Field(
+        None, 
+        alias="yearsOfExperience",
+        ge=0, 
+        description="The updated years of experience"
+    )
+
+    match_score: Optional[int] = Field(
+        None, 
+        alias="matchScore",
+        ge=0, 
+        le=100, 
+        description="The updated AI-generated match score"
+    )
+
+    ai_assessment: Optional[str] = Field(
+        None,
+        alias="aiAssessment",
+        description="The updated AI summary"
+    )
+
+    model_config = ConfigDict(populate_by_name=True)
