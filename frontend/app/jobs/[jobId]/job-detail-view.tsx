@@ -21,7 +21,8 @@ type JobWithDescription = Job & {
 };
 
 async function getJob(jobId: string): Promise<JobWithDescription> {
-  const res = await fetch(`/api/jobs/${jobId}`);
+  const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobs/${jobId}`;
+  const res = await fetch(apiUrl);
   if (!res.ok) {
     if (res.status === 404) {
       throw new Error("JobNotFound");

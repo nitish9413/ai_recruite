@@ -7,7 +7,9 @@ import { columns } from "./columns";
 import { JobsTableFilters } from "./jobs-table-filters"; // Import the specific filters
 
 async function getJobs(): Promise<Job[]> {
-  const res = await fetch("/api/jobs");
+  const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobs`;
+  console.log("ATTEMPTING TO FETCH FROM:", apiUrl);
+  const res = await fetch(apiUrl);
   if (!res.ok) throw new Error("Failed to fetch jobs");
   return res.json();
 }

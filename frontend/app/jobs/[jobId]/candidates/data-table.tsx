@@ -7,7 +7,8 @@ import { DataTable } from "@/components/tables/data-table"; // Import our new ge
 import { columns } from "./columns";
 
 async function getCandidates(jobId: string): Promise<Candidate[]> {
-  const res = await fetch(`/api/jobs/${jobId}/candidates`);
+  const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobs/${jobId}/candidates`;
+  const res = await fetch(apiUrl);
   if (!res.ok) throw new Error("Failed to fetch candidates");
   return res.json();
 }

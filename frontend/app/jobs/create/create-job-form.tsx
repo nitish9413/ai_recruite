@@ -17,8 +17,9 @@ interface CreateJobPayload {
 
 // Mock mutation function to simulate creating a job
 async function createJob(payload: CreateJobPayload): Promise<{ jobId: string }> {
+  const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobs`;
   console.log("Creating job with payload:", payload);
-  const response = await fetch('/api/jobs', {
+  const response = await fetch(apiUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

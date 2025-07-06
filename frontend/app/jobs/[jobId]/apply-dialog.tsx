@@ -20,27 +20,22 @@ import { Loader2 } from "lucide-react";
 
 // This is a mock mutation function.
 // In a real app, this would be a POST request to your API.
-async function applyForJob(formData: FormData): Promise<void> {
-    const jobId = formData.get("jobId");
-    console.log("Submitting application for job:", jobId);
-    console.log("Applicant Name:", formData.get("applicantName"));
-    console.log("Applicant Email:", formData.get("applicantEmail"));
-    console.log("Resume File:", formData.get("resume"));
+async function applyForJob({ jobId, formData }: { jobId: string, formData: FormData }): Promise<any> {
+  const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobs/${jobId}/apply`;
+  
+  // When using FormData with fetch, you DO NOT set the 'Content-Type' header.
+  // The browser sets it automatically with the correct boundary.
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    body: formData,
+  });
 
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    // Simulate a potential error
-    if (formData.get("applicantName") === "error") {
-        throw new Error("Submission failed! Please try again.");
-    }
-
-    // In a real app, you would use fetch:
-    // const response = await fetch(`/api/jobs/${jobId}/apply`, {
-    //   method: 'POST',
-    //   body: formData,
-    // });
-    // if (!response.ok) throw new Error('Network response was not ok.');
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.detail || "Network response was not ok.");
+  }
+    
+  return response.json();
 }
 
 
@@ -74,7 +69,7 @@ export function ApplyForJobDialog({ jobId, jobTitle }: ApplyForJobDialogProps) {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         formData.append("jobId", jobId);
-        mutation.mutate(formData);
+        mutation.mutate({jobId,formData});
     };
 
     return (
