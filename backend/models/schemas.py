@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 class JobType(str, enum.Enum):
     "JOB type"
 
-    FULL_TYPE = "Full-time"
+    FULL_TIME = "Full-time"
     PART_TIME = "Part-time"
     CONTRACT = "Contract"
     INTERNSHIP = "Internship"
@@ -65,6 +65,9 @@ class Candidate(BaseModel):
     email: EmailStr = Field(..., description="The candidate's full name")
     application_date: datetime = Field(
         ..., alias="applocationDate", description="When the candidate applied"
+    )
+    years_of_experience:int =Field(
+        ...,alias="yearsOfExperience",ge=0,description="Candidate's experience in years"
     )
     resume_url: str = Field(
         ..., alias="resumeUrl", description="A URL to the canidate's stored resume"

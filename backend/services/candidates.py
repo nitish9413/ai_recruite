@@ -8,7 +8,7 @@ from models.tables import Candidate
 
 async def get_candidate_for_job(db: AsyncSession, job_id: str) -> List[Candidate]:
     result = await db.execute(select(Candidate).filter(Candidate.job_id == job_id))
-    return result.scalars().first()
+    return result.scalars().all()
 
 
 async def get_candidate_by_id(db: AsyncSession, candidate_id: str):
@@ -40,5 +40,6 @@ async def update_candidate_application(
 
     db.add(candidate)
     await db.commit()
-    await db.refresh()
+    await db.refresh(candidate)  # ✅ FIXED
+
     return candidate

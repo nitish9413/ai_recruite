@@ -28,8 +28,8 @@ class Job(Base):
     location = Column(String, nullable=False)
     type = Column(SQLAlchemyEnum(JobType), nullable=False)
     status = Column(SQLAlchemyEnum(JobStatus), nullable=False)
-    posted_date = Column(DateTime, nullable=False)
-
+    posted_date = Column(DateTime, nullable=False, default=datetime.utcnow)
+    required_skills = Column(Text, nullable=True)
     description = Column(Text, nullable=False)
     responsibilities = Column(Text, nullable=False)
     qualifications = Column(Text, nullable=False)
